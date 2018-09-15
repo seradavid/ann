@@ -7,6 +7,23 @@ std::vector<double> scaleDown(std::vector<double> input)
 	return result;
 }
 
+std::pair<double, double> findLimits(std::vector<std::vector<double>> input)
+{
+	double mn, mx;
+	mn = mx = input[0][0];
+
+	for (int i = 0; i < input.size(); ++i)
+	{
+		for (int j = 0; j < input[i].size(); ++j)
+		{
+			mn = mn < input[i][j] ? mn : input[i][j];
+			mx = mx > input[i][j] ? mx : input[i][j];
+		}
+	}
+
+	return std::make_pair(mn, mx);
+}
+
 std::vector<double> multiply(std::vector<double> vector, std::vector<std::vector<double>> matrix)
 {
 	std::vector<double> result = std::vector<double>(matrix[0].size());

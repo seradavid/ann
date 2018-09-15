@@ -5,13 +5,14 @@ Network::Network(int nrInputNeurons, int nrHiddenLayers, int nrOutputNeurons, AC
 	layers = std::vector<std::vector<double>>(nrHiddenLayers + 2);
 	weights = std::vector<std::vector<std::vector<double>>>(nrHiddenLayers + 1);
 	biases = std::vector<std::vector<double>>(nrHiddenLayers + 1);
+	errors = std::vector<std::vector<double>>(nrHiddenLayers + 1);
 
 	this->activationFunction = activationFunction;
 
 	layers[0] = std::vector<double>(nrInputNeurons); // input layer
 	for (int i = 1; i <= nrHiddenLayers; ++i)
 	{
-		layers[i] = std::vector<double>(nrInputNeurons); // hidden layers
+		layers[i] = std::vector<double>((layers[i - 1].size() + nrOutputNeurons) / 2); // hidden layers
 	}
 	layers[layers.size() - 1] = std::vector<double>(nrOutputNeurons); // output layer
 
@@ -24,6 +25,8 @@ Network::Network(int nrInputNeurons, int nrHiddenLayers, int nrOutputNeurons, AC
 		}
 
 		biases[i] = std::vector<double>(layers[i + 1].size());
+
+		errors[i] = std::vector<double>(layers[i + 1].size());
 	}
 
 	initializeWeights();
@@ -98,7 +101,45 @@ std::vector<double> Network::predict(std::vector<double> input)
 	return result;
 }
 
-void Network::train(std::vector<std::vector<double>> inputs, std::vector<std::vector<double>> outputs)
+void Network::train(std::vector<std::vector<double>> inputs, std::vector<std::vector<double>> outputs, int nrEpochs, int batchSize)
 {
+	std::pair<double, double> limits;
 
+	limits = findLimits(inputs);
+	inputMin = limits.first;
+	inputMax = limits.second;
+
+	limits = findLimits(outputs);
+	outputMin = limits.first;
+	outputMax = limits.second;
+
+	for (int k = 0; k < inputs.size(); k += batchSize)
+	{
+		// Calculate the error for the output layer
+		for (int i = 0; i < errors[errors.size() - 1].size(); ++i)
+		{
+			errors[errors.size() - 1][i] = 0;
+		}
+
+		for (int j = 0; j < batchSize; ++j)
+		{
+			std::vector<double> predictions = predict(inputs[k + j]);
+
+			for (int i = 0; i < outputs.size(); ++i)
+			{
+				errors[errors.size() - 1][i] += (outputs[k + j][i] - predictions[i]) * getActivationDerivative(layers[layers.size() - 1][i]);
+			}
+		}
+
+		for (int i = 0; i < errors[errors.size() - 1].size(); ++i)
+		{
+			errors[errors.size() - 1][i] /= batchSize;
+		}
+
+		// Backpropagate the error
+		for (int h = layers.size() - 2; h > 0; --h)
+		{
+
+		}
+	}
 }

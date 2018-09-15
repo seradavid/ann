@@ -5,6 +5,8 @@
 
 std::vector<double> scaleDown(std::vector<double>);
 
+std::pair<double, double> findLimits(std::vector<std::vector<double>>);
+
 std::vector<double> multiply(std::vector<double>, std::vector<std::vector<double>>);
 std::vector<double> add(std::vector<double>, std::vector<double>);
 

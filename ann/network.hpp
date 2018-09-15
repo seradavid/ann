@@ -10,9 +10,10 @@
 class Network
 {
 private:
-	std::vector<std::vector<double>>layers;
-	std::vector<std::vector<std::vector<double>>>weights;
-	std::vector<std::vector<double>>biases;
+	std::vector<std::vector<double>> layers;
+	std::vector<std::vector<std::vector<double>>> weights;
+	std::vector<std::vector<double>> biases;
+	std::vector<std::vector<double>> errors;
 
 	double inputMin;
 	double inputMax;
@@ -28,12 +29,12 @@ private:
 	double getActivationDerivative(double);
 
 public:
-	Network(int nrInputNeurons, int nrHiddenLayers, int nrOutputNeurons, ACTIVATION = TANH);
+	Network(int, int, int, ACTIVATION = TANH);
 	void initializeWeights();
 
 	std::vector<double> predict(std::vector<double>);
-	void train(std::vector<std::vector<double>>, std::vector<std::vector<double>>);
+	void train(std::vector<std::vector<double>>, std::vector<std::vector<double>>, int, int);
 
-	void saveModel(std::string path);
-	void loadModel(std::string path);
+	void saveModel(std::string);
+	void loadModel(std::string);
 };
